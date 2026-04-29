@@ -1,48 +1,23 @@
 public class QuantityMeasuementApp {
 
     /**
-     * Inner class representing Feet measurement
-     * Immutable and encapsulated
+     * Feet Class (same as UC1)
      */
     static class Feet {
         private final double value;
 
-        // Constructor
         public Feet(double value) {
             this.value = value;
         }
 
-        // Getter (optional)
-        public double getValue() {
-            return value;
-        }
-
-        /**
-         * Override equals() to compare values
-         */
         @Override
         public boolean equals(Object obj) {
-
-            // Reflexive check (same object)
-            if (this == obj) {
-                return true;
-            }
-
-            // Null and type check
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-
-            // Cast to Feet
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
             Feet other = (Feet) obj;
-
-            // Compare double safely
             return Double.compare(this.value, other.value) == 0;
         }
 
-        /**
-         * Override hashCode (required when equals is overridden)
-         */
         @Override
         public int hashCode() {
             return Double.hashCode(value);
@@ -50,7 +25,31 @@ public class QuantityMeasuementApp {
     }
 
     /**
-     * Static method to compare two feet values
+     * Inches Class (new for UC2)
+     */
+    static class Inches {
+        private final double value;
+
+        public Inches(double value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            Inches other = (Inches) obj;
+            return Double.compare(this.value, other.value) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Double.hashCode(value);
+        }
+    }
+
+    /**
+     * Static method to compare Feet values
      */
     public static boolean compareFeet(double v1, double v2) {
         Feet f1 = new Feet(v1);
@@ -59,22 +58,38 @@ public class QuantityMeasuementApp {
     }
 
     /**
-     * Main method (execution starts here)
+     * Static method to compare Inches values
+     */
+    public static boolean compareInches(double v1, double v2) {
+        Inches i1 = new Inches(v1);
+        Inches i2 = new Inches(v2);
+        return i1.equals(i2);
+    }
+
+    /**
+     * Main method
      */
     public static void main(String[] args) {
 
-        // Test cases
-        System.out.println("Same Value (1.0, 1.0): " + compareFeet(1.0, 1.0)); // true
-        System.out.println("Different Value (1.0, 2.0): " + compareFeet(1.0, 2.0)); // false
+        // Feet Tests
+        System.out.println("Feet Same Value (1.0,1.0): " + compareFeet(1.0, 1.0)); // true
+        System.out.println("Feet Different Value (1.0,2.0): " + compareFeet(1.0, 2.0)); // false
 
-        // Edge cases
+        // Inches Tests
+        System.out.println("Inches Same Value (1.0,1.0): " + compareInches(1.0, 1.0)); // true
+        System.out.println("Inches Different Value (1.0,2.0): " + compareInches(1.0, 2.0)); // false
+
+        // Edge Cases
         Feet f = new Feet(1.0);
-        System.out.println("Null Comparison: " + f.equals(null)); // false
-        System.out.println("Non-Numeric Input: " + f.equals("abc")); // false
-        System.out.println("Same Reference: " + f.equals(f)); // true
+        System.out.println("Feet vs Null: " + f.equals(null)); // false
+        System.out.println("Feet vs String: " + f.equals("abc")); // false
+        System.out.println("Feet Same Reference: " + f.equals(f)); // true
 
         // Example Output
         System.out.println("\nExample:");
+        System.out.println("Input: 1.0 inch and 1.0 inch");
+        System.out.println("Output: Equal (" + compareInches(1.0, 1.0) + ")");
+
         System.out.println("Input: 1.0 ft and 1.0 ft");
         System.out.println("Output: Equal (" + compareFeet(1.0, 1.0) + ")");
     }
