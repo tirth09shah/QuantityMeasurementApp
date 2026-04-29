@@ -2,11 +2,13 @@ public class QuantityMeasuementApp {
 
     /**
      * Enum for Length Units
-     * Conversion factor relative to FEET (base unit)
+     * Base unit: FEET
      */
     enum LengthUnit {
         FEET(1.0),
-        INCH(1.0 / 12.0);
+        INCH(1.0 / 12.0),
+        YARD(3.0),                 // 1 yard = 3 feet
+        CENTIMETER(0.0328084);     // 1 cm = 0.0328084 feet
 
         private final double conversionFactor;
 
@@ -20,7 +22,7 @@ public class QuantityMeasuementApp {
     }
 
     /**
-     * Generic Quantity Class
+     * Generic Quantity Class (same as UC3)
      */
     static class Quantity {
         private final double value;
@@ -34,28 +36,19 @@ public class QuantityMeasuementApp {
             this.unit = unit;
         }
 
-        /**
-         * Convert to base unit (feet)
-         */
         private double toBaseUnit() {
             return unit.toFeet(value);
         }
 
-        /**
-         * Override equals() for cross-unit comparison
-         */
         @Override
         public boolean equals(Object obj) {
 
-            // Same reference
             if (this == obj) return true;
 
-            // Null or type check
             if (obj == null || getClass() != obj.getClass()) return false;
 
             Quantity other = (Quantity) obj;
 
-            // Compare after converting both to feet
             return Double.compare(this.toBaseUnit(), other.toBaseUnit()) == 0;
         }
 
@@ -78,37 +71,40 @@ public class QuantityMeasuementApp {
     }
 
     /**
-     * Main method
+     * Main method with test cases
      */
     public static void main(String[] args) {
 
-        // Same-unit equality
-        System.out.println("Feet vs Feet: " +
-                compare(1.0, LengthUnit.FEET, 1.0, LengthUnit.FEET)); // true
+        // Yards tests
+        System.out.println("Yard vs Yard: " +
+                compare(2.0, LengthUnit.YARD, 2.0, LengthUnit.YARD)); // true
 
-        System.out.println("Inch vs Inch: " +
-                compare(1.0, LengthUnit.INCH, 1.0, LengthUnit.INCH)); // true
+        System.out.println("Yard vs Feet: " +
+                compare(1.0, LengthUnit.YARD, 3.0, LengthUnit.FEET)); // true
 
-        // Cross-unit equality
-        System.out.println("Feet vs Inches: " +
-                compare(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCH)); // true
+        System.out.println("Yard vs Inches: " +
+                compare(1.0, LengthUnit.YARD, 36.0, LengthUnit.INCH)); // true
 
-        System.out.println("Inches vs Feet: " +
-                compare(12.0, LengthUnit.INCH, 1.0, LengthUnit.FEET)); // true
+        // Centimeter tests
+        System.out.println("CM vs CM: " +
+                compare(2.0, LengthUnit.CENTIMETER, 2.0, LengthUnit.CENTIMETER)); // true
 
-        // Different values
-        System.out.println("Different Values: " +
-                compare(1.0, LengthUnit.FEET, 2.0, LengthUnit.FEET)); // false
+        System.out.println("CM vs Inches: " +
+                compare(1.0, LengthUnit.CENTIMETER, 0.393701, LengthUnit.INCH)); // true
 
-        // Edge cases
-        Quantity q = new Quantity(1.0, LengthUnit.FEET);
-        System.out.println("Null Comparison: " + q.equals(null)); // false
-        System.out.println("Same Reference: " + q.equals(q)); // true
+        System.out.println("CM vs Feet: " +
+                compare(1.0, LengthUnit.CENTIMETER, 1.0, LengthUnit.FEET)); // false
+
+        // Mixed unit (transitive)
+        boolean step1 = compare(1.0, LengthUnit.YARD, 3.0, LengthUnit.FEET);
+        boolean step2 = compare(3.0, LengthUnit.FEET, 36.0, LengthUnit.INCH);
+
+        System.out.println("Transitive Check (Yard->Feet->Inch): " + (step1 && step2)); // true
 
         // Example Output
         System.out.println("\nExample:");
-        System.out.println("Input: Quantity(1.0, feet) and Quantity(12.0, inches)");
+        System.out.println("Input: Quantity(1.0, YARDS) and Quantity(3.0, FEET)");
         System.out.println("Output: Equal (" +
-                compare(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCH) + ")");
+                compare(1.0, LengthUnit.YARD, 3.0, LengthUnit.FEET) + ")");
     }
 }
