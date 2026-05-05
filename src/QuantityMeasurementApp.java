@@ -23,20 +23,39 @@ public class QuantityMeasuementApp {
         // Addition (target unit)
         System.out.println("Add in grams: " +
                 w1.add(w2, WeightUnit.GRAM));
+        public class QuantityMeasuementApp {
 
-        // Pound example
-        QuantityWeight p1 = new QuantityWeight(1.0, WeightUnit.POUND);
-        QuantityWeight g1 = new QuantityWeight(453.592, WeightUnit.GRAM);
+            public static void demonstrateEquality(Quantity<?> q1, Quantity<?> q2) {
+                System.out.println(q1 + " == " + q2 + " → " + q1.equals(q2));
+            }
 
-        System.out.println("Pound equality: " + p1.equals(g1));
+            public static <U extends IMeasurable> void demonstrateConversion(Quantity<U> q, U target) {
+                System.out.println(q + " → " + q.convertTo(target));
+            }
 
-        // Edge cases
-        System.out.println("Zero: " +
-                new QuantityWeight(0.0, WeightUnit.KILOGRAM)
-                        .convertTo(WeightUnit.GRAM));
+            public static <U extends IMeasurable> void demonstrateAddition(Quantity<U> q1, Quantity<U> q2, U target) {
+                System.out.println("Add: " + q1.add(q2, target));
+            }
 
-        System.out.println("Negative: " +
-                new QuantityWeight(-1.0, WeightUnit.KILOGRAM)
-                        .convertTo(WeightUnit.GRAM));
-    }
-}
+            public static void main(String[] args) {
+
+                // Length
+                Quantity<LengthUnit> l1 = new Quantity<>(1.0, LengthUnit.FEET);
+                Quantity<LengthUnit> l2 = new Quantity<>(12.0, LengthUnit.INCH);
+
+                demonstrateEquality(l1, l2);
+                demonstrateConversion(l1, LengthUnit.INCH);
+                demonstrateAddition(l1, l2, LengthUnit.FEET);
+
+                // Weight
+                Quantity<WeightUnit> w1 = new Quantity<>(1.0, WeightUnit.KILOGRAM);
+                Quantity<WeightUnit> w2 = new Quantity<>(1000.0, WeightUnit.GRAM);
+
+                demonstrateEquality(w1, w2);
+                demonstrateConversion(w1, WeightUnit.GRAM);
+                demonstrateAddition(w1, w2, WeightUnit.KILOGRAM);
+
+                // Cross-category (should be false)
+                demonstrateEquality(l1, w1);
+            }
+        }
